@@ -1,11 +1,10 @@
 
 @startuml
 
-abstract class Product {
+class Product {
   - id : Long
   - name : String
   - price : double
-  + getSummary() : String
   + getId() : Long
   + getName() : String
   + getPrice() : double
@@ -14,37 +13,26 @@ abstract class Product {
   + setPrice(price : double) : void
 }
 
-class DigitalProduct {
-  - downloadUrl : String
-  - fileSizeMB : double
-  - discountedPrice : double
-  + getSummary() : String
-  + applyDiscount(rate : double) : void
-  + getDiscountedPrice() : double
-  + getDownloadUrl() : String
-  + getFileSizeMB() : double
+class ProductService {
+  - products : List<Product>
+  - nextId : Long
+  + getAllProducts() : List<Product>
+  + getProductById(id : Long) : Optional<Product>
+  + addProduct(product : Product) : Product
+  + deleteProduct(id : Long) : void
+  + findByName(name : String) : List<Product>
 }
 
-class PhysicalProduct {
-  - weightKg : double
-  - dimensions : String
-  - discountedPrice : double
-  + getSummary() : String
-  + applyDiscount(rate : double) : void
-  + getDiscountedPrice() : double
-  + getWeightKg() : double
-  + getDimensions() : String
+class ProductController {
+  - productService : ProductService
+  + getAllProducts() : List<Product>
+  + getProductById(id : Long) : Product
+  + addProduct(product : Product) : Product
+  + deleteProduct(id : Long) : void
+  + search(name : String) : List<Product>
 }
 
-interface Discountable {
-  + applyDiscount(rate : double) : void
-  + getDiscountedPrice() : double
-}
-
-Product <|-- DigitalProduct
-Product <|-- PhysicalProduct
-
-Discountable <|.. DigitalProduct
-Discountable <|.. PhysicalProduct
+ProductController ..> ProductService
+ProductService --> Product
 
 @enduml
